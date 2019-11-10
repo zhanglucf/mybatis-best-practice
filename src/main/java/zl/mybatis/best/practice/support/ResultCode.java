@@ -2,7 +2,7 @@ package zl.mybatis.best.practice.support;
 
 public enum ResultCode {
     SUCCESS(1,"success"),
-    FAILURE(1001,"fail"),
+    FAILURE(500,"fail"),
     FAILURE_1001_DATA_NOT_FOUND(1001,"自定义异常 FAILURE_1001_DATA_NOT_FOUND"),
     FAILURE_1002_FIELD_IS_EMPTY(1002,"自定义异常 FAILURE_1002_FIELD_IS_EMPTY"),
     FAILURE_1003_FIELD_IS_MISS(1003,"自定义异常 FAILURE_1003_FIELD_IS_MISS"),
@@ -24,6 +24,16 @@ public enum ResultCode {
     ResultCode(Integer code, String message) {
         this.code = code;
         this.message = message;
+    }
+
+    public static ResultCode getResultCode(Integer code){
+        ResultCode[] values = ResultCode.values();
+        for (ResultCode resultCode: values) {
+            if (resultCode.code().intValue() == code.intValue()) {
+                return resultCode;
+            }
+        }
+        return null;
     }
 
     public Integer code() {

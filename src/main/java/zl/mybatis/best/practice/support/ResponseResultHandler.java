@@ -2,14 +2,15 @@ package zl.mybatis.best.practice.support;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
@@ -18,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static zl.mybatis.best.practice.support.ResultCode.getResultCode;
 
 @Slf4j
 @ControllerAdvice
@@ -34,10 +37,26 @@ public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        if (body instanceof Map && ((Map) body).get("error") != null) {
-            return Result.failure(ResultCode.FAILURE, body);
+
+        if (body instanceof HashMap && ((HashMap) body).get("customFlag") != null) {
+            Map m = (HashMap) body;
+            if ("Y".equals((m).get("customFlag"))) {
+                m.remove("customFlag");
+                return Result.failure(getResultCode((Integer) m.get("code")), body);
+            } else if ("N".equals(((HashMap) body).get("customFlag"))) {
+//                Result failure = Result.failure(ResultCode.FAILURE, body);
+                m.remove("customFlag");
+                Result result = new Result();
+                result.setCode((Integer) m.get("code"));
+                result.setMessage(m.get("message") == null ? "" : m.get("message").toString());
+                result.setStatus(m.get("status").toString());
+                result.setData(body);
+                return result;
+            } else {
+                return body;
+            }
         }
-        return Result.success(body);
+        return body;
     }
 
     /**
@@ -51,9 +70,11 @@ public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
     public Map errorHandler(Exception ex) {
         log.error("全局异常捕捉处理 系统异常", ex);
         Map map = new LinkedHashMap();
-        map.put("code", 100);
-        map.put("msg", ex.getMessage());
-        map.put("error", ex.getMessage());
+        map.put("code", 500);
+        map.put("status", "fail");
+        map.put("message", ex.getMessage());
+        map.put("error", ex.toString());
+        map.put("customFlag", "N");
         return map;
     }
 
@@ -63,14 +84,18 @@ public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
      * @param ex
      * @return
      */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     @ExceptionHandler(value = CustomException.class)
     public Map customExceptionHandler(Exception ex) {
-        log.error(((CustomException) ex).getMsg(), ex);
-        Map map = new LinkedHashMap();
-        map.put("code", ((CustomException) ex).getCode());
-        map.put("msg", ((CustomException) ex).getMsg());
-        map.put("error", ((CustomException) ex).getDesc());
+        CustomException cex = (CustomException) ex;
+        log.error(cex.getMessage(), ex);
+        Map map = new HashMap();
+        map.put("status", "fail");
+        map.put("code", cex.getCode());
+        map.put("message", cex.getMessage());
+        map.put("error", cex.getDesc());
+        map.put("customFlag", "Y");
         return map;
     }
 

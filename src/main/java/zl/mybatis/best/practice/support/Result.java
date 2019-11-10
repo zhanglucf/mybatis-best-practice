@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class Result implements Serializable {
     private Integer code;
     private String message;
+    private String status;
     private Object data;
 
     public Result() {
@@ -28,6 +29,7 @@ public class Result implements Serializable {
         Result result = new Result();
         result.setCode(ResultCode.SUCCESS.code());
         result.setMessage(ResultCode.SUCCESS.message());
+        result.setStatus("success");
         return result;
     }
 
@@ -35,30 +37,40 @@ public class Result implements Serializable {
         Result result = new Result();
         result.setCode(ResultCode.SUCCESS.code());
         result.setMessage(ResultCode.SUCCESS.message());
+        result.setStatus("success");
         result.setData(data);
         return result;
     }
     public static Result success(ResultCode resultCode) {
-        return new Result(resultCode);
+        Result result = new Result(resultCode);
+        result.setStatus("success");
+        return result;
     }
 
     public static Result success(ResultCode resultCode, Object data) {
-        return new Result(resultCode, data);
+        Result result = new Result(resultCode, data);
+        result.setStatus("success");
+        return result;
     }
 
     public static Result failure() {
         Result result = new Result();
         result.setCode(ResultCode.FAILURE.code());
         result.setMessage(ResultCode.FAILURE.message());
+        result.setStatus("fail");
         return result;
     }
 
     public static Result failure(ResultCode resultCode) {
-        return new Result(resultCode);
+        Result result = new Result(resultCode);
+        result.setStatus("fail");
+        return result;
     }
 
     public static Result failure(ResultCode resultCode, Object data) {
-        return new Result(resultCode, data);
+        Result result = new Result(resultCode, data);
+        result.setStatus("fail");
+        return result;
     }
 
 }

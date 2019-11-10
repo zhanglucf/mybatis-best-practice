@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomException extends RuntimeException {
-    private long code;
-    private String msg;
+    private Integer code;
+    private String message;
     private String desc;
 }
