@@ -1,5 +1,6 @@
 package zl.mybatis.best.practice.support;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -44,7 +46,6 @@ public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
                 m.remove("customFlag");
                 return Result.failure(getResultCode((Integer) m.get("code")), body);
             } else if ("N".equals(((HashMap) body).get("customFlag"))) {
-//                Result failure = Result.failure(ResultCode.FAILURE, body);
                 m.remove("customFlag");
                 Result result = new Result();
                 result.setCode((Integer) m.get("code"));
@@ -53,10 +54,15 @@ public class ResponseResultHandler implements ResponseBodyAdvice<Object> {
                 result.setData(body);
                 return result;
             } else {
-                return body;
+                JSONObject json = new JSONObject();
+                return json.toJSONString(Result.success(body));
             }
+        } else if (body instanceof String) {
+            return  new JSONObject().toJSONString(Result.success(body));
+        } else if (body instanceof Date) {
+            return Result.success(body);
         }
-        return body;
+        return Result.success(body);
     }
 
     /**

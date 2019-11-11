@@ -5,12 +5,10 @@ import org.springframework.web.bind.annotation.*;
 import zl.mybatis.best.practice.entity.Blog;
 import zl.mybatis.best.practice.mapper.BlogMapper;
 import zl.mybatis.best.practice.service.BlogService;
-import zl.mybatis.best.practice.support.*;
+import zl.mybatis.best.practice.support.ResponseResult;
 
 import java.util.Date;
 import java.util.List;
-
-import static zl.mybatis.best.practice.support.ResultCode.FAILURE_1001_DATA_NOT_FOUND;
 
 @RequestMapping("/blog")
 @RestController
@@ -44,5 +42,23 @@ public class MyController {
         return blogList;
     }
 
+    @GetMapping(value = "/str", produces="application/json")
+    public String str() {
+        return "hello word !";
+    }
 
+    @GetMapping(value = "/boo", produces="application/json")
+    public Boolean boo() {
+        return false;
+    }
+
+    @GetMapping(value = "/dat", produces="application/json")
+    public Date dat() {
+        return new Date();
+    }
+
+    @GetMapping(value = "/in", produces="application/json")
+    public int in() {
+        return 1;
+    }
 }
