@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zl.mybatis.best.practice.mapper.AccountBoxMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="accountBoxId">
+        insert into account_cloud_box (account_id,cloud_box_id) value (#{accountId},#{cloudBoxId})
+    </insert>
+    <select id="findByCloudBoxId" resultType="zl.mybatis.best.practice.entity.AccountBox">
+        SELECT account_box_id,account_id,cloud_box_id FROM account_cloud_box WHERE cloud_box_id = #{cloud_box_id};
+    </select>
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zl.mybatis.best.practice.mapper.CloudBoxMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="cloudBoxId">
+      insert into cloud_box (cloud_box_name,sn, ip, depiction,insert_time,update_time )
+      value (#{cloudBoxName},#{sn},#{ip},#{depiction},#{insertTime},#{updateTime});
+    </insert>
+
+    <select id="find" parameterType="long" resultType="zl.mybatis.best.practice.entity.CloudBox">
+        SELECT * FROM cloud_box WHERE CLOUD_BOX_ID = #{cloudBoxId}
+    </select>
+</mapper>

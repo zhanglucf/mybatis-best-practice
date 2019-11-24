@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.199.174:3306/test?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://192.168.199.174:3306/project?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true
     username: root
     password: 123456
   druid:
